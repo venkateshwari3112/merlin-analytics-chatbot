@@ -1,0 +1,13 @@
+# Create app.py (copy the content from the artifact above into this file)
+# You can do this manually or let me know and I'll provide the exact command
+
+# Create requirements.txt
+cat > requirements.txt << 'EOF'
+flask==3.0.0
+flask-cors==4.0.0
+groq==0.4.1
+sentence-transformers==2.7.0
+numpy==1.24.3
+gunicorn==21.2.0
+torch==2.0.1
+EOF
