@@ -1,0 +1,140 @@
+"""
+Data Preparation Script for Merlin Analytics Chatbot
+"""
+
+from sentence_transformers import SentenceTransformer
+import pickle
+import numpy as np
+import os
+
+# Merlin Analytics website content
+COMPANY_DATA = """
+About Merlin Analytics:
+Merlin Analytics is a specialist consultancy focused on delivering impactful EPM-based finance transformations. 
+The core team is composed of seasoned experts with 20+ years of FP&A transformation experience, including former 
+finance transformation leads, Oracle EPM architects, and developers who have shaped FP&A functions across major industries.
+
+Services and Expertise:
+Merlin Analytics specializes in EPM (Enterprise Performance Management), AI/ML, and Automations to revolutionize 
+finance operations. They focus on innovative disruptiveness in financial frameworks and cutting-edge financial strategies.
+
+Industries Served:
+Merlin Analytics has a footprint spanning financial services, insurance, retail, asset management, public sector, and more.
+
+Mission and Vision:
+The company aims to revolutionize finance workflows where tradition meets transformation. They utilize AI and automation 
+to redefine traditional finance paradigms and help clients embrace the future of finance.
+
+Core Capabilities:
+- EPM-based finance transformations
+- FP&A (Financial Planning & Analysis) optimization
+- Oracle EPM architecture and development
+- AI and ML integration for finance
+- Finance workflow automation
+- Data-driven financial insights
+
+Value Proposition:
+Merlin Analytics helps organizations leverage their data to revolutionize financial operations. They combine 
+seasoned expertise with cutting-edge technology to deliver impactful change in finance functions.
+
+Team Expertise:
+The team includes professionals with 20+ years of experience in FP&A transformation, former finance transformation 
+leads, Oracle EPM architects, and developers with deep industry knowledge.
+
+Leadership Team:
+Madhu Sethuraman - Director
+Madhu Sethuraman serves as a Director at Merlin Analytics, bringing extensive leadership experience in EPM-based 
+finance transformations. As a director, Madhu oversees strategic initiatives and client engagements, ensuring the 
+delivery of high-quality finance transformation solutions. His expertise spans across multiple industries and he 
+plays a key role in driving the company's vision of revolutionizing finance through technology and innovation.
+
+Pankaj Mishra - Director
+Pankaj Mishra is a Director at Merlin Analytics with deep expertise in finance transformation and EPM solutions. 
+Pankaj brings strategic leadership to the organization and works closely with clients to design and implement 
+impactful finance transformation programs. His experience includes working with major organizations across various 
+sectors, helping them optimize their FP&A functions and leverage cutting-edge EPM technologies.
+
+Consulting Team:
+Venkateshwari Narayanan - Senior Consultant
+Venkateshwari Narayanan is a Senior Consultant at Merlin Analytics, specializing in EPM implementations and finance 
+transformation projects. Venkateshwari works directly with clients to understand their requirements, design solutions, 
+and implement EPM-based finance systems. With expertise in Oracle EPM, AI/ML integration, and automation, Venkateshwari 
+helps organizations modernize their finance operations and achieve operational excellence. As a senior consultant, 
+Venkateshwari brings technical expertise and hands-on implementation experience to client engagements.
+
+Team Structure:
+The Merlin Analytics team is led by experienced Directors Madhu Sethuraman and Pankaj Mishra, supported by skilled 
+consultants like Venkateshwari Narayanan. This structure ensures both strategic oversight and technical excellence 
+in every client engagement. The team combines leadership experience with hands-on implementation capabilities, 
+providing end-to-end support for finance transformation initiatives.
+"""
+
+def chunk_text(text, chunk_size=300, overlap=50):
+    """Split text into overlapping chunks for better retrieval"""
+    words = text.split()
+    chunks = []
+    
+    for i in range(0, len(words), chunk_size - overlap):
+        chunk = ' '.join(words[i:i + chunk_size])
+        if chunk.strip():
+            chunks.append(chunk.strip())
+    
+    return chunks
+
+def create_vector_database():
+    """Create and save embeddings using simple file storage"""
+    
+    print("🚀 Starting data preparation...")
+    
+    # Create data directory
+    os.makedirs("./data", exist_ok=True)
+    
+    # Initialize the embedding model
+    print("📦 Loading embedding model...")
+    embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+    
+    # Chunk the company data
+    print("✂️  Chunking text...")
+    chunks = chunk_text(COMPANY_DATA)
+    print(f"   Created {len(chunks)} text chunks")
+    
+    # Create embeddings
+    print("🧮 Creating embeddings...")
+    embeddings = embedding_model.encode(chunks, show_progress_bar=True)
+    
+    # Save everything to files
+    print("💾 Saving to files...")
+    
+    data = {
+        'chunks': chunks,
+        'embeddings': embeddings
+    }
+    
+    with open('./data/merlin_data.pkl', 'wb') as f:
+        pickle.dump(data, f)
+    
+    print("✅ Data preparation complete!")
+    print(f"   Data location: ./data/merlin_data.pkl")
+    print(f"   Total chunks: {len(chunks)}")
+
+if __name__ == "__main__":
+    create_vector_database()
+```
+
+- Commit the file
+
+**3. Delete the `data` folder from GitHub:**
+- Click on the `data` folder
+- Click on `merlin_data.pkl`
+- Click "..." → "Delete file"
+- Commit
+- Go back and delete the empty `data` folder
+
+**4. Update `.gitignore`:**
+- Edit `.gitignore` to just:
+```
+__pycache__/
+*.pyc
+.DS_Store
+.env
+data/

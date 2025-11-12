@@ -17,4 +17,4 @@ RUN pip install -r requirements.txt
 EXPOSE 10000
 
 # Command to start the app
-CMD ["gunicorn", "Chatbot-backend:app", "--bind", "0.0.0.0:10000"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:10000"]
